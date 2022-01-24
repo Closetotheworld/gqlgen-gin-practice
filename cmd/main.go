@@ -1,14 +1,12 @@
 package main
 
 import (
-	"github.com/closetotheworld/gqlgen-gin-practice/api/v1/graph"
-	"github.com/closetotheworld/gqlgen-gin-practice/api/v1/graph/generated"
-	"log"
-	"net/http"
+	v1 "github.com/closetotheworld/gqlgen-gin-practice/internal/api/v1/graph"
+	"github.com/closetotheworld/gqlgen-gin-practice/internal/utils"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"os"
-
-	"github.com/99designs/gqlgen/graphql/handler"
-	"github.com/99designs/gqlgen/graphql/playground"
+	"time"
 )
 
 const defaultPort = "8080"
@@ -24,11 +22,24 @@ func main() {
 		port = defaultPort
 	}
 
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+	r := gin.Default()
 
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
-
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	r.Use(
+		gin.Logger(),
+		cors.New(cors.Config{
+			AllowOrigins:     []string{"*"},
+			AllowMethods:     []string{"GET", "OPTIONS", "POST"},
+			AllowHeaders:     []string{"Origin", "Authorization", "Content-Type"},
+			ExposeHeaders:    []string{"Content-Length"},
+			AllowCredentials: true,
+			MaxAge:           1 * time.Hour,
+		}),
+		utils.GinContextToContextMiddleware(),
+	)
+	v1QueryHandler := v1.QueryHandler()
+	r.GET(V1QueryPath, v1QueryHandler)
+	r.OPTIONS(V1QueryPath, v1QueryHandler)
+	r.POST(V1QueryPath, v1QueryHandler)
+	r.GET(V1PlaygroundPath, v1.PlaygroundHandler(V1QueryPath))
+	r.Run()
 }

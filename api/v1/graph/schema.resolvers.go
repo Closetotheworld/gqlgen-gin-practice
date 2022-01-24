@@ -6,6 +6,7 @@ package graph
 import (
 	"context"
 	"fmt"
+
 	"github.com/closetotheworld/gqlgen-gin-practice/api/v1/graph/generated"
 	"github.com/closetotheworld/gqlgen-gin-practice/api/v1/graph/model"
 )

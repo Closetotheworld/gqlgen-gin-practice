@@ -2,7 +2,11 @@
 #
 # https://gqlgen.com/getting-started/
 
-type Todo {
+interface Node {
+  id: ID!
+}
+
+type Todo implements Node{
   id: ID!
   text: String!
   done: Boolean!
@@ -16,6 +20,8 @@ type User {
 
 type Query {
   todos: [Todo!]!
+  node(id: ID!): Node
+  nodes(ids: [ID!]!): [Node]!
 }
 
 input NewTodo {
