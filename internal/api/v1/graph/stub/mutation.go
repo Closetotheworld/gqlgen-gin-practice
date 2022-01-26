@@ -15,5 +15,9 @@ func (s *Stub) Mutation() generated.MutationResolver {
 }
 
 func (s *stubMutation) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic("implement me")
+	return s.MutationResolver.CreateTodo(ctx, input)
+}
+
+func (s *stubMutation) UpdateTodo(ctx context.Context, input model.UpdateTodo) (*model.Todo, error) {
+	return s.MutationResolver.UpdateTodo(ctx, input)
 }

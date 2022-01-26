@@ -14,6 +14,10 @@ func (s *Stub) Query() generated.QueryResolver {
 	return &stubQuery{Stub: s}
 }
 
-func (s stubQuery) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic("implement me")
+func (s stubQuery) Todos(ctx context.Context, input *model.PaginationInput) (*model.TodoConnection, error) {
+	return s.QueryResolver.Todos(ctx, input)
+}
+
+func (s stubQuery) Todo(ctx context.Context, id int) (*model.Todo, error) {
+	return s.QueryResolver.Todo(ctx, id)
 }
