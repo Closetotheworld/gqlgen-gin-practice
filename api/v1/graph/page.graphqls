@@ -1,0 +1,27 @@
+
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: Int
+    endCursor: Int
+}
+
+interface Node {
+    id: Int!
+}
+
+interface Edge {
+    cursor: Int!
+    node: Node!
+}
+
+interface Connection {
+    edges: [Edge!]!
+    pageInfo: PageInfo!
+}
+
+input PaginationInput {
+    first: Int
+    after: Int
+}
+
